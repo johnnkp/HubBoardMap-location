@@ -12,7 +12,6 @@ const cors = require('cors');
 const axios = require('axios');
 const convert = require('xml2json');
 const session = require('express-session');
-const e = require('express');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
