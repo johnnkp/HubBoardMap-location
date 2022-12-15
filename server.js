@@ -27,7 +27,7 @@ app.use(session({
 }));
 
 
-//-----START of Schema Define-----
+//------- START of Schema Define -------
 const UserSchema = mongoose.Schema(
     {
         userID: {type: Number, required: true, unique: true},
@@ -81,20 +81,22 @@ const CommentSchema = mongoose.Schema(
         location: {type: mongoose.Schema.Types.ObjectId, ref:'Location'}
     }
 );
-//-----END of schema define-----
+//------- END of schema define -------
 
 
 
-//-----START of models-----
+//------- START of models -------
 const User = mongoose.model('User', UserSchema);
 const Location = mongoose.model('Location', LocationSchema);
 const Segment = mongoose.model('Segment', SegmentSchema);
 const Comment = mongoose.model('Comment', CommentSchema);
-//-----END of models-----
+//------- END of models -------
 
 
 
-//------- START of function declaration -------
+//------- START of middleware declaration -------
+// notice: only here, the response is in text/plain format
+//         other response are ALL in json format
 const adminCheck = (req, res, next) => {
     if (req.session.admin)
         return next();
@@ -111,11 +113,11 @@ const loginCheck = (req, res, next) => {
         res.set('Content-Type', 'text/plain')
         res.send('401 Unauthorized');
 };
-//------- END of function declaration -------
+//------- END of middleware declaration -------
 
 
 
-//------- DB connection START-------
+//------- DB connection START -------
 mongoose.connect('mongodb+srv://stu087:p877630W@cluster0.qsanyuv.mongodb.net/stu087'); // change it to other desired connect string if needed
 const db = mongoose.connection;
 // connect to MongoDB
@@ -204,6 +206,7 @@ db.once('open', () => {
     // check if the userID and password is valid
 
     // suppose there's a form with input field username & password (expected hashed)
+        // required field: ['username','passwordHashed']
         User.findOne({username: req.body['username'], passwordHashed: req.body['passwordHashed']})
         .exec(
             (err, user) => {
@@ -243,6 +246,7 @@ db.once('open', () => {
 
   // when logout
     app.get('/logout', (req,res) => {
+        // destroy current session
         req.session.destroy(
             (err, e) => {
                 if (err) {
@@ -268,6 +272,7 @@ db.once('open', () => {
                 for (let location of locations) {
                     locationsArray.push(
                         {
+                            // more data can be selected to shown upon any need
                             name: location.name,
                             latitude: location.latitude,
                             longtitude: location.latitude,
@@ -278,7 +283,7 @@ db.once('open', () => {
                     )
                 }
                 res.status(200).json(locationsArray);
-                // result is an array contain all locations with chosen data sent
+                // result is an array contain all locations object with chosen data sent
             }
         );
     });
@@ -582,7 +587,7 @@ db.once('open', () => {
                             keyword: req.body['name']
                         },
                         (err, event) => {
-                            if (event === null) {
+                            if (err || event === null) {
                                 res.status(406).json({
                                     locationCreated: false,
                                     reason: '406 Location Not Created (unknown error)'
@@ -918,7 +923,7 @@ const server = app.listen(80); // change to other port if needed
 
 
 
-//----- codes for initialisation BELOW -----
+//----- codes for initialisation BELOW (archived) -----
 
 /* 
 *initialising locations schema
@@ -931,8 +936,8 @@ Segment.distinct('route', (err, segments) => {
             {
                 locID: count,
                 name: segment,
-                latitude: 0,
-                longtitude: 0,
+                latitude: 22.3,
+                longtitude: 114.1,
                 maxTrafficSpeed: 0,
                 minTrafficSpeed: 0,
                 segments: [],
