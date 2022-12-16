@@ -729,7 +729,7 @@ db.once('open', () => {
                                 username: req.body['username'],
                                 passwordHashed: hashedPassword,
                                 favLocations: [],
-                                comment: [],
+                                myComments: [],
                                 adminRight: (req.body['adminRight'] == 'true' ? true : false) 
                             },
                             (err, event) => {
