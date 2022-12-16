@@ -38,18 +38,21 @@
 //-----library used-----
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const axios = require('axios');
-const convert = require('xml2json');
-const session = require('express-session');
 const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
+const convert = require('xml2json');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const path = require('path');
+const session = require('express-session');
 const saltRounds = 10;          // hashing rounds, the higher safer but more time consuming
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+// https://create-react-app.dev/docs/deployment/#other-solutions
+app.use(express.static(path.join(__dirname, 'build')));
 mongoose.set('strictQuery', true);  // to supress warning for once 
 
 
@@ -157,7 +160,9 @@ db.on('error', console.error.bind(console,'Connection error:'));
 db.once('open', () => {
     console.log('DB connected');
 
-
+        app.get('/', function (req, res) {
+            res.sendFile(path.join(__dirname, 'build', 'index.html'));
+        });
 
 //------- LOGIN and LOGOUT START -------
     
@@ -1024,7 +1029,7 @@ db.once('open', () => {
 
 
 
-const server = app.listen(80); // change to other port if needed
+app.listen(80); // change to other port if needed
 
 
 

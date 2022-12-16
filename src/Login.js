@@ -7,72 +7,44 @@
  * Lin Chun Man (1155177065)
 */
 import React from 'react'
-import { Form, Button } from "react-bootstrap";
-import  { useState } from 'react';
+import {Form, Button} from "react-bootstrap";
+import {useState} from 'react';
 import axios from "axios";
-
-
+import loginBackground from "./login/images/bg-01.jpg";
+import "./login/css/main.css"
+import "./login/css/util.css"
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [register, setRegister] = useState(false);
-const handleSubmit = (e) => {// set configurations
-  const configuration = {
-    method: "post",
-    url: "https://nodejs-mongodb-auth-app.herokuapp.com/login",
-    data: {
-      email,
-      password,
-    },
-  };
+    // https://colorlib.com/wp/template/login-form-v5/
+    // https://www.freecodecamp.org/news/react-background-image-tutorial-how-to-set-backgroundimage-with-inline-css-style
+    return <div className="container-login100" style={{backgroundImage: `url(${loginBackground})`}}>
+        <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+            <form className="login100-form validate-form flex-sb flex-w" action="http://localhost:80/login"
+                  method="post">
+					<span className="login100-form-title p-b-40">
+						Login
+					</span>
 
-  // prevent the form from refreshing the whole page
-  e.preventDefault();
-  axios(configuration)
-  .then((result) => {console.log(result);})
-  .catch((error) => {console.log(error);})
+                <label htmlFor="username">Username</label>
+                <br/>
+                <div className="wrap-input100 validate-input" data-validate="Username is required">
+                    <input className="input100" type="text" id="username" name="username"/>
+                    <span className="focus-input100"></span>
+                </div>
 
-  alert("Submited");
-}
-    return (
-        <>
-          <h2>Login</h2>
-     
-        <Form onSubmit={(e)=>handleSubmit(e)}>
-        {/* email */}
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-          />
-        </Form.Group>
+                <label htmlFor="password">Password</label>
+                <br/>
+                <div className="wrap-input100 validate-input" data-validate="Password is required">
+                    <input className="input100" type="password" id="password" name="password"/>
+                    <span className="focus-input100"></span>
+                </div>
 
-        {/* password */}
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          />
-        </Form.Group>
-
-        {/* submit button */}
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={(e) => handleSubmit(e)}
-           >
-          Login
-        </Button>
-      </Form>
-        </>
-    )
+                <div className="container-login100-form-btn m-t-17">
+                    <button className="login100-form-btn">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>;
 }
