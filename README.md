@@ -3,19 +3,19 @@
 In the project directory, you can run:
 
 ### `npm run dev`
-Run development mode in both client-side and server-side concurrently.
+Run both client-side and server-side concurrently.
+
+### `npm run server-dev`
+Run the server under nodemon.
+
+### `npm run start` 
+Run React development mode.
 
 ### `npm run build`
 Run React build command.
 
-### `npm run start` 
-Run the server under node.
-
 ### `npm install`
 Install all dependencies.
-
-### `npm run test`
-Run tests.
 
 ## Home Page Link (Temporary)
 Available in Dec. 17

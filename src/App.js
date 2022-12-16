@@ -1,6 +1,6 @@
 
 import { Container, Col, Row } from "react-bootstrap";
-import "./App.css";
+import "./bootstrap.scheme.css";
 import Login from "./Login";
 
 
