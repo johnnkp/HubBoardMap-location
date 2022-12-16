@@ -1,7 +1,36 @@
-// IMPORTANT:
-// this is a integrated file in one whole 'server.js',
-// if there is sufficient time,
-// this file will and should decompose to smaller middlewares
+/* PROGRAM server.js - HubBoardMap server
+ * PROGRAMMER:
+ * Mok Chau Wing (1155142763)
+ * Chan Shi Leung (1155142863)
+ * Li Tsz Yeung (1155144367)
+ * Ng Kai Pong (1155144829)
+ * Lee Yat Him (1155176301)
+ * Lin Chun Man (1155177065)
+ * VERSION 1: written 16-12-2022
+ * PURPOSE: Start server with related configuration.
+ * DATA STRUCTURE:
+ * const express - ExpressJS server library
+ * const app - server
+ * const bodyParser - ExpressJS body parsing middleware
+ * const cors - ExpressJS Cross-Origin Resource Sharing (CORS) library
+ * const session - express-session
+ * const mongoose - MongoDB query library
+ * const axios - axios-promise based HTTP library
+ * const convert - xml2json
+ * const UserSchema - account database collection schema
+ * const LocationSchema - location database collection schema
+ * const SegmentSchema - location segment database collection schema
+ * const CommentSchema - comment database collection schema
+ * const User - account database
+ * const Location - location database
+ * const Segment - location segment database
+ * const Comment - comment database
+ *
+ * DESIGN EXPLANATION:
+ * This is a integrated file in one whole 'server.js',
+ * if there is sufficient time,
+ * this file will and should decompose to smaller middlewares
+*/
 
 //-----library used-----
 const express = require('express');
