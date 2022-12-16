@@ -132,26 +132,23 @@ const Comment = mongoose.model('Comment', CommentSchema);
 //-----END of models-----
 
 
-
 //------- START of middleware declaration -------
 const adminCheck = (req, res, next) => {
     if (req.session.admin)
         return next();
     else
-        res.status(401)
-            .set('Content-Type', 'text/plain')
-            .send('401 Unauthorized');
+        res.status(401).json({
+            requestAccepted: false,
+            reason: "401 Unauthorized (you don't have admin permission)"
+        });
 };
 const loginCheck = (req, res, next) => {
     if (req.session.isLoggedIn)
         return next();
     else
-        res.status(401)
-            .set('Content-Type', 'text/plain')
-            .send('401 Unauthorized');
+        res.status(401).redirect('/');
 };
 //------- END of middleware declaration -------
-
 
 
 //------- DB connection START-------
