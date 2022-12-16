@@ -4,7 +4,7 @@
   "description": "A node server which should handle HTTP request from user, then response and CRUD the datum to mongoDB via mongoose and express. This server should also sending request to external API to retrieve data.",
   "main": "server.js",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "CSCI2720 group12",
@@ -17,6 +17,14 @@
     "express-session": "^1.17.3",
     "mongoose": "^6.8.0",
     "papaparse": "^5.3.2",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.7.0",
+    "react-dom": "^18.2.0",
     "xml2json": "^0.12.0"
+  },
+  "overrides": {
+    "xml2json": {
+      "joi": "17.7.0"
+    }
   }
 }
