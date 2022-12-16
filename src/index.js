@@ -70,8 +70,8 @@ function Home() {
   return (
     <div>
       <iframe style={{ position: "fixed", right: "0", bottom: "0", height: "90%", width: "80%", border: "0" }}
-        frameborder="0" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAe0TdcYNRvHTpj6kL12M3Zbwf_v8WkD8o
-        &center=22.356311, 114.124516&zoom=11" allowfullscreen>
+              frameBorder="0" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAe0TdcYNRvHTpj6kL12M3Zbwf_v8WkD8o
+        &center=22.356311, 114.124516&zoom=11" allowFullScreen>
       </iframe>
     </div >
   );

@@ -33,6 +33,8 @@
  * This is a integrated file in one whole 'server.js',
  * if there is sufficient time,
  * this file will and should decompose to smaller middlewares
+ *
+ * '/' is referring to login page, while '/home' is homepage
 */
 
 //-----library used-----
@@ -46,10 +48,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 const session = require('express-session');
-const saltRounds = 10;          // hashing rounds, the higher safer but more time consuming
+const saltRounds = 10; // hashing rounds, the higher safer but more time consuming
 
 app.use(cors());
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 // https://create-react-app.dev/docs/deployment/#other-solutions
 app.use(express.static(path.join(__dirname, 'build')));
@@ -58,7 +60,7 @@ mongoose.set('strictQuery', true);  // to supress warning for once
 
 app.use(session({
     secret: 'csci2720-Gp12',        // A value for signing cookie ID
-    cookie: { maxAge: 3600000 },    // Expires in 60 min
+    cookie: {maxAge: 3600000},    // Expires in 60 min
     resave: true,
     saveUninitialized: true
 }));
@@ -87,7 +89,7 @@ const LocationSchema = mongoose.Schema(
         longtitude: {type: Number, required: true, default: 114.1},
 
         // if the speeds are not found, give default value of 0 and try to handle in frontend
-        maxTrafficSpeed: {type: Number, required: true, default: 0}, 
+        maxTrafficSpeed: {type: Number, required: true, default: 0},
         minTrafficSpeed: {type: Number, required: true, default: 0},
 
         segments: [
@@ -104,7 +106,7 @@ const LocationSchema = mongoose.Schema(
 );
 const SegmentSchema = mongoose.Schema(
     {
-    // the irn_id should have the same ID as segment_Id in the XML data provided
+        // the irn_id should have the same ID as segment_Id in the XML data provided
         route: {type: String, required: true},
         irn_id: {type: Number, required: true, unique: true},
         speed: {type: Number, required: true, default: 0}
@@ -115,7 +117,7 @@ const CommentSchema = mongoose.Schema(
         commentID: {type: Number, required: true, unique: true},
         content: {type: String},
         author: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        location: {type: mongoose.Schema.Types.ObjectId, ref:'Location'}
+        location: {type: mongoose.Schema.Types.ObjectId, ref: 'Location'}
     }
 );
 //-----END of schema define-----
@@ -136,17 +138,17 @@ const adminCheck = (req, res, next) => {
     if (req.session.admin)
         return next();
     else
-        res.status(401);
-        res.set('Content-Type', 'text/plain')
-        res.send('401 Unauthorized');
+        res.status(401)
+            .set('Content-Type', 'text/plain')
+            .send('401 Unauthorized');
 };
 const loginCheck = (req, res, next) => {
     if (req.session.isLoggedIn)
         return next();
     else
-        res.status(401);
-        res.set('Content-Type', 'text/plain')
-        res.send('401 Unauthorized');
+        res.status(401)
+            .set('Content-Type', 'text/plain')
+            .send('401 Unauthorized');
 };
 //------- END of middleware declaration -------
 
@@ -156,9 +158,9 @@ const loginCheck = (req, res, next) => {
 mongoose.connect('mongodb+srv://stu087:p877630W@cluster0.qsanyuv.mongodb.net/stu087'); // change it to other desired connect string if needed
 const db = mongoose.connection;
 // connect to MongoDB
-db.on('error', console.error.bind(console,'Connection error:'));
+db.on('error', console.error.bind(console, 'Connection error:'));
 db.once('open', () => {
-    console.log('DB connected');
+        console.log('DB connected');
 
         app.get('/', function (req, res) {
             res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -250,23 +252,14 @@ db.once('open', () => {
         .exec(
             (err, user) => {
                 if (err) 
-                    res.status(400).json({
-                        isLoggedin: false,
-                        reason: err
-                    });
+                    res.status(400).redirect('/');
                 else if (user === null) // if there's no such user
-                    res.send(401).json({
-                    isLoggedin: false,
-                    reason: "Wrong username or password"
-                });
+                    res.send(401).redirect('/');
                 else {
                     // compare the input password to the user's hashed password using bcrypt.compare()
                     bcrypt.compare(req.body['password'], user.passwordHashed, (err, result) => {
                         if (err || result === false) {
-                            res.status(400).json({
-                                isLoggedin: false,
-                                reason: 'Wrong username or password'
-                            });
+                            res.status(400).redirect('/');
                         }
                         else {
                         // use ANY location to obtain one last updated time
@@ -278,13 +271,7 @@ db.once('open', () => {
                                 req.session.isLoggedIn = true;
                                 req.session.userID = user.userID;
                                 // send response
-                                    res.status(200).json({
-                                        isLoggedin: true,
-                                        reason: null,
-                                        userID: user.userID,
-                                        adminRight: user.adminRight,
-                                        lastUpdated: location.lastUpdated
-                                    })
+                                    res.status(200).redirect('/home');
                                 }
                             );
                         }
@@ -301,7 +288,7 @@ db.once('open', () => {
                 if (err) {
                     res.send(err);
                 }
-                else res.redirect('/');  // redirect to home page if no error during logout
+                else res.redirect('/');  // redirect to login page if no error during logout
             }
         );
     });
@@ -320,7 +307,7 @@ db.once('open', () => {
                 let locationsArray = [];
                 for (let location of locations) {
                     locationsArray.push(
-                        {
+                        {   
                             name: location.name,
                             latitude: location.latitude,
                             longtitude: location.latitude,
@@ -350,13 +337,14 @@ db.once('open', () => {
                 }
                 else {
                 res.status(200).json({
+                    locID: location.locID,
                     name: location.name,
                     latitude: location.latitude,
                     longtitude: location.longtitude,
                     maxTrafficSpeed: location.maxTrafficSpeed,
                     minTrafficSpeed: location.minTrafficSpeed,
                     lastUpdated: location.lastUpdated
-                })
+                });
                 }
             }
         );
@@ -406,6 +394,7 @@ db.once('open', () => {
                             outputArray.push(
                                 {
                                     commentID: comment.commentID,
+                                    userID: comment.author.userID,
                                     author: comment.author.username,
                                     content: comment.content
                                 }
@@ -467,6 +456,7 @@ db.once('open', () => {
                               outputArray.push(
                                   {
                                       commentID: comment.commentID,
+                                      locID: comment.location.locID,
                                       location: comment.location.name,
                                       content: comment.content
                                   }
@@ -1013,7 +1003,7 @@ db.once('open', () => {
 
 
 //------- other requests -------
-//     redirect to homepage
+//     redirect to login page
     app.all('/*', (req, res) => {
         res.status(404).redirect('/');  
     });
