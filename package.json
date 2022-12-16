@@ -33,9 +33,6 @@
   "overrides": {
     "@svgr/plugin-svgo": {
       "svgo": "3.0.2"
-    },
-    "xml2json": {
-      "joi": "17.7.0"
     }
   },
   "browserslist": {
