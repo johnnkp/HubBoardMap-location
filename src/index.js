@@ -6,22 +6,59 @@
  * Lee Yat Him (1155176301)
  * Lin Chun Man (1155177065)
 */
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import './bootstrap.scheme.css';
+import React from 'react';
+import {useEffect, useState} from 'react';
+import {
+    BrowserRouter, Routes, Route, Link,
+    useMatch, useParams, useLocation
+} from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+
+function App(props) {
+    return (
+        <BrowserRouter>
+            <div>
+                <ul>
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/locations">Location</Link></li>
+                    <li><Link to="/favlocations">Favourites</Link></li>
+                    <li><Link to="/logout">Logout</Link></li>
+                </ul>
+            </div>
+            <Routes>
+                <Route path="/"/>
+                <Route path="*" element={<NoMatch/>}/>
+            </Routes>
+        </BrowserRouter>
+    );
+}
+
+function NoMatch() {
+    let location = useLocation();
+    return (
+        <div>
+            <h3>
+                No match for:
+                <br></br>
+                <code>{location.pathname}</code>
+            </h3>
+        </div>
+    );
+}
+
+const root = ReactDOM.createRoot(document.querySelector('#app'));
+root.render(
+    <React.StrictMode>
+        <App/>
+    </React.StrictMode>
+);
 
 // Experimental: import empty service worker for PWA
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-
-
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
 
 // Experimental: register service worker
 serviceWorkerRegistration.register();
