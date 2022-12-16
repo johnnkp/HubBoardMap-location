@@ -44,23 +44,17 @@ function App() {
         </Container>
       </Navbar>
       {/* Vertical Navigation Bar */}
-      <div style={{ position: "fixed", height:"90%", width: "20%", top: "10%" }} className="btn-group-vertical">
-        <button className="btn rounded-0">
-          <Link to="/">Home</Link>
-        </button>
-        <button className="btn rounded-0">
-          <Link to="/locations">All Locations</Link>
-        </button>
-        <button className="btn rounded-0">
-          <Link to="/favlocations">Favourites Locations</Link>
-        </button>
-        <button className="btn rounded-0">
-          <Link to="/logout">Logout</Link>
-        </button>
+      <div style={{ position: "fixed", height: "90%", width: "20%", top: "10%" }} className="btn-group-vertical">
+        <Link className="btn btn-secondary rounded-0" to="/home">Home</Link>
+        <Link className="btn btn-secondary rounded-0" to="/locations">All Locations</Link>
+        <Link className="btn btn-secondary rounded-0" to="/favlocations">Favourite Locations</Link>
+        <Link className="btn btn-secondary rounded-0" to="/logout">Logout</Link>
       </div>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="*" element={<NoMatch />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/locations" element={<Location />} />
+        <Route path="/favlocations" />
+        <Route path="/logout" />
       </Routes>
     </BrowserRouter>
   );
@@ -69,32 +63,48 @@ function App() {
 function Home() {
   return (
     <div>
-      <iframe style={{ position: "fixed", right: "0", bottom: "0", height: "90%", width: "80%", border: "0" }}
-              frameBorder="0" referrerPolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAe0TdcYNRvHTpj6kL12M3Zbwf_v8WkD8o
-        &center=22.356311, 114.124516&zoom=11" allowFullScreen>
+      <iframe id="map" title="map" style={{ position: "fixed", right: "0", bottom: "0", height: "90%", width: "80%", border: "0" }}
+        src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAe0TdcYNRvHTpj6kL12M3Zbwf_v8WkD8o
+        &center=22.356311, 114.124516&zoom=11">
       </iframe>
     </div >
   );
 }
 
 function Location() {
+  let loc = [];
+  fetch("http://localhost:8000/locations")
+    .then((response) => response.json())
+    .then((data) => {
+      let locId = [49, 115, 39, 91, 78, 110, 118, 141, 69, 164, 16, 19, 48, 54, 67];
+      for (let i = 0; i < 15; i++) {
+        loc.push({ id: i, name: data[locId[i] - 1].name, min: data[locId[i] - 1].minTrafficSpeed, max: data[locId[i] - 1].maxTrafficSpeed });
+      }
+    })
+  console.log(loc);
   return (
-    <table>
-
+    <table id="locations" style={{ position: "fixed", top: "10%", left: "20%" }} className="table">
+      <thead>
+        <tr>
+          <th scope="col">Location ID</th>
+          <th scope="col">Road name</th>
+          <th scope="col">Minimum Speed (km/h)</th>
+          <th scope="col">Maximum Speed (km/h)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {loc.map((loc) => {
+          return (
+            <tr>
+              <th scope="row">{loc.id}</th>
+              <td>{loc.name}</td>
+              <td>{loc.min}</td>
+              <td>{loc.max}</td>
+            </tr>
+          );
+        })}
+      </tbody>
     </table>
-  );
-}
-
-function NoMatch() {
-  let location = useLocation();
-  return (
-    <div>
-      <h3>
-        No match for:
-        <br></br>
-        <code>{location.pathname}</code>
-      </h3>
-    </div>
   );
 }
 
