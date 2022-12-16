@@ -4,7 +4,7 @@
   "description": "A node server which should handle HTTP request from user, then response and CRUD the datum to mongoDB via mongoose and express. This server should also sending request to external API to retrieve data.",
   "main": "server.js",
   "scripts": {
-    "start": "react-scripts build && serve -s build -l 80",
+    "start": "react-scripts build",
     "server-dev": "nodemon server.js",
     "dev": "concurrently --names \"CLIENT,SERVER\" \"npm run start\" \"npm run server-dev\"",
     "build": "react-scripts build",
@@ -28,7 +28,6 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.5",
     "react-scripts": "^5.0.1",
-    "serve": "^14.1.2",
     "xml2json": "^0.12.0"
   },
   "overrides": {

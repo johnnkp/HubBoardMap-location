@@ -7,8 +7,7 @@
  * Lin Chun Man (1155177065)
 */
 import ReactDOM from 'react-dom/client';
-import React from 'react';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     BrowserRouter, Routes, Route, Link,
     useMatch, useParams, useLocation
@@ -17,6 +16,9 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Login from "./Login";
+// Experimental: import empty service worker for PWA
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 function App(props) {
     return (
@@ -29,6 +31,7 @@ function App(props) {
                     <li><Link to="/logout">Logout</Link></li>
                 </ul>
             </div>
+            <Login/>
             <Routes>
                 <Route path="/"/>
                 <Route path="*" element={<NoMatch/>}/>
@@ -56,9 +59,6 @@ root.render(
         <App/>
     </React.StrictMode>
 );
-
-// Experimental: import empty service worker for PWA
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 // Experimental: register service worker
 serviceWorkerRegistration.register();
