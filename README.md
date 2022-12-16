@@ -31,7 +31,7 @@ and of the disciplinary guidelines and procedures applicable to breaches of such
  Faculty of Engineering Guidelines to Academic Honesty:  
  https://www.erg.cuhk.edu.hk/erg/AcademicHonesty  
 Student:  
-Mok Chau Wing (1155142763)  
+Mok Chau Wing (1155142764)  
 Chan Shi Leung (1155142863)  
 Li Tsz Yeung (1155144367)  
 Ng Kai Pong (1155144829)  
