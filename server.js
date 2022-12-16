@@ -12,7 +12,8 @@ const cors = require('cors');
 const axios = require('axios');
 const convert = require('xml2json');
 const session = require('express-session');
-const e = require('express');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;          // hashing rounds, the higher safer but more time consuming
 
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
@@ -95,7 +96,7 @@ const Comment = mongoose.model('Comment', CommentSchema);
 
 
 
-//------- START of function declaration -------
+//------- START of middleware declaration -------
 const adminCheck = (req, res, next) => {
     if (req.session.admin)
         return next();
@@ -112,7 +113,7 @@ const loginCheck = (req, res, next) => {
         res.set('Content-Type', 'text/plain')
         res.send('401 Unauthorized');
 };
-//------- END of function declaration -------
+//------- END of middleware declaration -------
 
 
 
@@ -204,8 +205,11 @@ db.once('open', () => {
 
     // check if the userID and password is valid
 
-    // suppose there's a form with input field username & password (expected hashed)
-        User.findOne({username: req.body['username'], passwordHashed: req.body['passwordHashed']})
+    // required input field: ['username', 'password']
+    // IMPORTANT: username is unique!!!!
+
+    // find user with the input username
+        User.findOne({username: req.body['username']})
         .exec(
             (err, user) => {
                 if (err) 
@@ -213,33 +217,44 @@ db.once('open', () => {
                         isLoggedin: false,
                         reason: err
                     });
-                else if (user === null)
+                else if (user === null) // if there's no such user
                     res.send(401).json({
                     isLoggedin: false,
                     reason: "Wrong username or password"
                 });
                 else {
-                    // use ANY location to obtain one last updated time
-                    Location.findOne({locID: 1})
-                    .exec(
-                        (err, location) => {
-                        // set session
-                        req.session.admin = user.adminRight; // set user's admin right
-                        req.session.loggedIn = true;
-                        req.session.userID = user.userID;
-                        // send response
-                            res.status(200).json({
-                                isLoggedin: true,
-                                reason: null,
-                                userID: user.userID,
-                                adminRight: user.adminRight,
-                                lastUpdated: location.lastUpdated
-                            })
+                    // compare the input password to the user's hashed password using bcrypt.compare()
+                    bcrypt.compare(req.body['password'], user.passwordHashed, (err, result) => {
+                        if (err || result == false) {
+                            res.status(400).json({
+                                isLoggedin: false,
+                                reason: 'Wrong username or password'
+                            });
                         }
-                    )
+                        else {
+                        // use ANY location to obtain one last updated time
+                            Location.findOne({locID: 1})
+                            .exec(
+                                (err, location) => {
+                                // set session
+                                req.session.admin = user.adminRight; // set user's admin right
+                                req.session.loggedIn = true;
+                                req.session.userID = user.userID;
+                                // send response
+                                    res.status(200).json({
+                                        isLoggedin: true,
+                                        reason: null,
+                                        userID: user.userID,
+                                        adminRight: user.adminRight,
+                                        lastUpdated: location.lastUpdated
+                                    })
+                                }
+                            );
+                        }
+                    });  
                 };
             }
-        )
+        );
     });
 
   // when logout
@@ -466,6 +481,18 @@ db.once('open', () => {
         );
     });
 
+    // set admin password
+    app.get('/adminpwupdate', (req, res) => {
+        bcrypt.hash('admin', saltRounds, (err, hashedPassword) => {
+            User.updateOne(
+                {userID: 0},
+                {$set: {passwordHashed: hashedPassword}},
+                (err, event) => {
+                    res.status(200).send('admin password updated successfully');
+                }
+            );
+        });
+    });
 
 //------- GET request END -------
 
@@ -604,7 +631,8 @@ db.once('open', () => {
 
     // add user 
     // (input form expected) 
-    // required field: ['username', 'passwordHashed', 'adminRight']
+    // expecting valid input
+    // required field: ['username', 'password', 'adminRight']
     app.post('/admin/add/user', adminCheck, (req, res) => {
         User.find().sort({userID: -1}).limit(1)
         .exec(
@@ -617,30 +645,33 @@ db.once('open', () => {
                 }
                 else {
                     let newUserID = user[0].userID + 1;
-                    User.create(
-                        {
-                            userID: newUserID,
-                            username: req.body['username'],
-                            passwordHashed: req.body['passwordHashed'],
-                            favLocations: [],
-                            comment: [],
-                            adminRight: req.body['adminRight']
-                        },
-                        (err, event) => {
-                            if (event === null) {
-                                res.status(406).json({
-                                    userCreated: false,
-                                    reason: '406 User Not Created (unknown error)'
-                                });
+                    bcrypt.hash(req.body['password'], saltRounds, (err, hashedPassword) => {
+                        // hash the password and store the hashed password to db
+                        User.create(
+                            {
+                                userID: newUserID,
+                                username: req.body['username'],
+                                passwordHashed: hashedPassword,
+                                favLocations: [],
+                                comment: [],
+                                adminRight: req.body['adminRight']
+                            },
+                            (err, event) => {
+                                if (event === null) {
+                                    res.status(406).json({
+                                        userCreated: false,
+                                        reason: '406 User Not Created (unknown error)'
+                                    });
+                                }
+                                else {
+                                    res.status(201).json({
+                                        userCreated: true,
+                                        reason: null
+                                    });
+                                }
                             }
-                            else {
-                                res.status(201).json({
-                                    userCreated: true,
-                                    reason: null
-                                });
-                            }
-                        }
-                    )
+                        );
+                    });
                 }
             }
         );
@@ -809,8 +840,8 @@ db.once('open', () => {
 
     // update user info (username & password only as from the spec)
     // (expected input text field)
-    // required fields: ['username', 'passwordHashed']
-    // also assumed the password already hashed in frontend
+    // required input fields: ['username', 'password']
+    // hashing will do on server-side
     app.put('/admin/update/user/:userID', adminCheck, (req, res) => {
         User.findOne({userID: req.params['userID']})
         .exec(
@@ -822,25 +853,28 @@ db.once('open', () => {
                     });
                 }
                 else {
-                    User.updateOne(
-                        {userID: req.params['userID']},
-                        {$set: 
-                            {
-                                username: req.body['username'],
-                                passwordHashed: req.body['passwordHashed']
+                    // hashing the new password
+                    bcrypt.hash(req.body['password'], saltRounds, (err, hashedPassword) => {
+                        User.updateOne(
+                            {userID: req.params['userID']},
+                            {$set: 
+                                {
+                                    username: req.body['username'],
+                                    passwordHashed: hashedPassword
+                                }
+                            },
+                            (err, event) => {
+                                if (err) res.status(400).json({
+                                    userInfoUpdated: false,
+                                    reason: '400 Bad Request (unknown error)'
+                                });
+                                else res.status(200).json({
+                                    userInfoUpdated: true,
+                                    reason: null
+                                });
                             }
-                        },
-                        (err, event) => {
-                            if (err) res.status(400).json({
-                                userInfoUpdated: false,
-                                reason: '400 Bad Request (unknown error)'
-                            });
-                            else res.status(200).json({
-                                userInfoUpdated: true,
-                                reason: null
-                            });
-                        }
-                    );
+                        );
+                    });
                 }
             }
         );
@@ -914,7 +948,7 @@ db.once('open', () => {
 
 
 
-const server = app.listen(80); // change to other port if needed
+const server = app.listen(3000); // change to other port if needed
 
 
 
