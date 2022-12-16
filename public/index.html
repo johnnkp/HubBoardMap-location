@@ -1,16 +1,30 @@
+<!DOCTYPE html>
 <html>
-
+<!-- PROGRAMMER:
+Mok Chau Wing (1155142763)
+Chan Shi Leung Jonathan (1155142863)
+Li Tsz Yeung (1155144367)
+Ng Kai Pong (1155144829)
+Lee Yat Him (1155176301)
+Lin Chun Man (1155177065)
+-->
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/bootstrap.scheme.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />>
+  <title>A Social Map of Events</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  link rel="icon" href="%PUBLIC_URL%/HubBoardMap.png"/>
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="stylesheet" href="/public/stylesheets/bootstrap.scheme.css">
 </head>
 
 <body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
-  <iframe width="600" height="450" style="border:0" loading="lazy" allowfullscreen
-src="https://www.google.com/maps/embed/v1/view?zoom=10&center=22.3193%2C114.1694&key=AIzaSyDqwLtbgF2pB6LOva22j22Tq2hyowQ0xTU"></iframe>
-</iframe>
+  <div id="app">Rendering...</div>
+  <iframe style="position:fixed;right:0;bottom:0;height:100%;width:80%" frameborder="0" style="border:0"
+    referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAe0TdcYNRvHTpj6kL12M3Zbwf_v8WkD8o
+  &center=22.356311, 114.124516&zoom=11" allowfullscreen>
+  </iframe>
 </body>
 
 </html>

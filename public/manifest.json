@@ -1,0 +1,15 @@
+{
+  "short_name": "HubBoard",
+  "name": "HubBoard Map",
+  "icons": [
+    {
+      "src": "HubBoardMap.png",
+      "type": "image/png",
+      "sizes": "200x200"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#f9f9f9"
+}
