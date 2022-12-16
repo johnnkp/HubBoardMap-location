@@ -21,5 +21,22 @@ Install all dependencies.
 Available in Dec. 17
 
 ## Declaration
-We have read this article carefully: http://www.cuhk.edu.hk/policy/academichonesty  
-If there are any problematic citations of missing sources, please notify by CUHK email or CSE email.
+CSCI2720/ESTR2106 Project  
+I/We declare that the assignment here submitted is original except for source material explicitly acknowledged,  
+and that the same or closely related material for another course has been cited in the final report.  
+I/We also acknowledge that I am/we are aware of University policy and regulations on honesty in academic work,  
+and of the disciplinary guidelines and procedures applicable to breaches of such policy and regulations, as contained in the website.  
+ University Guideline on Academic Honesty:  
+ http://www.cuhk.edu.hk/policy/academichonesty  
+ Faculty of Engineering Guidelines to Academic Honesty:  
+ https://www.erg.cuhk.edu.hk/erg/AcademicHonesty  
+Student:  
+Mok Chau Wing (1155142763)  
+Chan Shi Leung (1155142863)  
+Li Tsz Yeung (1155144367)  
+Ng Kai Pong (1155144829)  
+Lee Yat Him (1155176301)  
+Lin Chun Man (1155177065)  
+Date: Dec. 16, 2022  
+
+**Disclaimer:** If there are any problematic citations of missing sources, please notify by CUHK email or CSE email before further actions.
