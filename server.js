@@ -146,7 +146,7 @@ const loginCheck = (req, res, next) => {
     if (req.session.isLoggedIn)
         return next();
     else
-        res.status(401).redirect('/');
+        res.status(401).redirect('http://localhost:3000/');
 };
 //------- END of middleware declaration -------
 
@@ -168,7 +168,7 @@ db.once('open', () => {
   // when login 
   // (asssumed the userID is valid and the password is already hashed in frontend)
   // also the password and username are come from input form
-    app.post('/login', (req, res) => {
+    app.post('/', (req, res) => {
 
       // update database (didn't handle when fetch XML fails)
         axios.get('https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml')
@@ -249,14 +249,14 @@ db.once('open', () => {
         .exec(
             (err, user) => {
                 if (err) 
-                    res.status(400).redirect('/');
+                    res.status(400).redirect('http://localhost:3000/');
                 else if (user === null) // if there's no such user
-                    res.send(401).redirect('/');
+                    res.status(400).redirect('http://localhost:3000/');
                 else {
                     // compare the input password to the user's hashed password using bcrypt.compare()
                     bcrypt.compare(req.body['password'], user.passwordHashed, (err, result) => {
                         if (err || result === false) {
-                            res.status(400).redirect('/');
+                            res.status(400).redirect('http://localhost:3000/');
                         }
                         else {
                         // use ANY location to obtain one last updated time
@@ -268,7 +268,7 @@ db.once('open', () => {
                                 req.session.isLoggedIn = true;
                                 req.session.userID = user.userID;
                                 // send response
-                                    res.status(200).redirect('/home');
+                                    res.status(200).redirect(user.adminRight?'http://localhost:3000/admin/home':'http://localhost:3000/home');
                                 }
                             );
                         }
@@ -285,7 +285,7 @@ db.once('open', () => {
                 if (err) {
                     res.send(err);
                 }
-                else res.redirect('/');  // redirect to login page if no error during logout
+                else res.redirect('http://localhost:3000/');  // redirect to login page if no error during logout
             }
         );
     });
@@ -1002,7 +1002,7 @@ db.once('open', () => {
 //------- other requests -------
 //     redirect to login page
     app.all('/*', (req, res) => {
-        res.status(404).redirect('/');  
+        res.status(404).redirect('http://localhost:3000/');  
     });
 //------- other requests -------
 
@@ -1025,7 +1025,6 @@ app.listen(80); // change to other port if needed
 
 /* 
 *initialising locations schema
-
 Segment.distinct('route', (err, segments) => {
     let count = 1;
     let arr = [];
@@ -1056,7 +1055,6 @@ Segment.distinct('route', (err, segments) => {
 
 /* 
 * inserting all segments into corresponding location's segments array
-
 Location.find().sort({locID: 1})
 .exec(
     (err, locations) => {
