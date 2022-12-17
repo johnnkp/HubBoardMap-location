@@ -249,13 +249,16 @@ db.once('open', () => {
         .exec(
             (err, user) => {
                 if (err) 
+                    // redirect to login page
                     res.status(400).redirect('http://localhost:3000/');
                 else if (user === null) // if there's no such user
+                    // redirect to login page
                     res.status(400).redirect('http://localhost:3000/');
                 else {
                     // compare the input password to the user's hashed password using bcrypt.compare()
                     bcrypt.compare(req.body['password'], user.passwordHashed, (err, result) => {
                         if (err || result === false) {
+                            // redirect to login page since login failed
                             res.status(400).redirect('http://localhost:3000/');
                         }
                         else {
@@ -267,7 +270,7 @@ db.once('open', () => {
                                 req.session.admin = user.adminRight; // set user's admin right
                                 req.session.isLoggedIn = true;
                                 req.session.userID = user.userID;
-                                // send response
+                                // rediecting to admin or home page base on different adminRight
                                     res.status(200).redirect(user.adminRight?'http://localhost:3000/admin/home':'http://localhost:3000/home');
                                 }
                             );
@@ -755,7 +758,7 @@ db.once('open', () => {
 
     // add favourite location 
     // (although it is called add, technically there's no document added so PUT method is used instead)
-    app.put('/location/:locID/addfav', loginCheck, (req, res) => {
+    app.put('/location/:locID/fav', loginCheck, (req, res) => {
         User.findOne({userID: req.session.userID})
         .populate('favLocations')
         .exec(
@@ -774,10 +777,16 @@ db.once('open', () => {
                             alreadyOnList = true;
                     }
                     if (alreadyOnList) {
-                        res.status(400).json({
-                            favLocAdded: false,
-                            reason: '400 Bad Request (location already on list)'
-                        });
+                        User.updateOne(
+                            {userID: req.session.userID},
+                            {$pull: {favLocations: location}},
+                            (err, event) => {
+                                res.status(200).json({
+                                    favLocAdded: false,
+                                    reason: "200 OK favLocationRemoved"
+                                });
+                            }
+                        );
                     }
                     else {
                         // find the requested location and add it to favourite list
@@ -809,63 +818,7 @@ db.once('open', () => {
             }
         );
     });
-
-    // remove fav location
-    app.put('/location/:locID/removefav', loginCheck, (req, res) => {
-        User.findOne({userID: req.session.userID})
-        .populate('favLocations')
-        .exec(
-            (err, user) => {
-                if (err || user === null) {
-                    res.status(400).json({
-                        favLocRemoved: false,
-                        reason: '400 Bad Request (no such user)'
-                    });
-                }
-                else {
-                    // find if location is in their favourite
-                    let alreadyOnList = false;
-                    for (let location of user.favLocations) {
-                        if (location.locID == req.params['locID'])
-                            alreadyOnList = true;
-                    }
-                    if (!alreadyOnList) {
-                        res.status(400).json({
-                            favLocRemoved: false,
-                            reason: '400 Bad Request (location not on list)'
-                        });
-                    }
-                    else {
-                        // find the requested location and remove it from favourite list
-                        Location.findOne({locID: req.params['locID']})
-                        .exec(
-                            (err, location) => {
-                                if (err || location === null) {
-                                    res.status(400).json({
-                                        favLocRemoved: false,
-                                        reason: '400 Bad Request (no such location)'
-                                    });
-                                }
-                                else {
-                                    User.updateOne(
-                                        {userID: req.session.userID},
-                                        {$pull: {favLocations: location}},
-                                        (err, event) => {
-                                            res.status(200).json({
-                                                favLocRemoved: true,
-                                                reason: null
-                                            });
-                                        }
-                                    );
-                                }
-                            }
-                        );
-                    }
-                }
-            }
-        );
-    });
-
+    
 // ADMIN required
 
     // update location info (road name only as from the spec)
@@ -1002,7 +955,7 @@ db.once('open', () => {
 //------- other requests -------
 //     redirect to login page
     app.all('/*', (req, res) => {
-        res.status(404).redirect('http://localhost:3000/');  
+        res.status(404).redirect('http://localhost:3000/');  // redirect to login page
     });
 //------- other requests -------
 
