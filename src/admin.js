@@ -241,7 +241,7 @@ class ReadLocation extends React.Component {
     e.preventDefault()
     console.log(this.state)
 
-    axios.get('http://localhost:80/admin/location/'+this.state.locID, {parmas:{locID : this.state.locID}})
+    axios.get('http://localhost:80/admin/location/'+this.state.locID, {parmas:{locID : this.state.locID}},)
     .then(response => {
       console.log(response)
     })
@@ -351,7 +351,8 @@ class UpdateLocation extends React.Component {
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-    axios.put('http://localhost:80/admin/add/location', this.state)
+    axios.put('http://localhost:80//admin/update/location/' +this.state.locID, { name :this.state.name, latitude:this.state.latitude,
+     longtitude:this.state.longtitude, maxTrafficSpeed: this.state.maxTrafficSpeed, minTrafficSpeed:this.state.minTrafficSpeed, parmas:{locID : this.state.locID}})
       .then(response => {
         console.log(response)
       })
@@ -443,7 +444,7 @@ class UpdateUser extends React.Component {
     e.preventDefault()
     console.log(this.state)
 
-    axios.put('http://localhost:80/admin/update/user/' + this.state.userId, {parmas:{locID : this.state.userID}})
+    axios.put('http://localhost:80/admin/update/user/' + this.state.userID, {parmas:{locID : this.state.userID}})
     .then(response => {
       console.log(response)
     })
@@ -573,4 +574,3 @@ class DeleteUser extends React.Component {
     )
   }
 }
-
