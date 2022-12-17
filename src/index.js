@@ -21,7 +21,7 @@ import Login from "./Login";
 // Experimental: import empty service worker for PWA
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-let locId = [49, 115, 39, 91, 78, 110, 118, 141, 69, 164, 16, 19, 48, 54, 67];
+const locID = [49, 115, 39, 91, 78, 110, 118, 141, 69, 164, 16, 19, 48, 54, 67];
 
 function App() {
   return (
@@ -38,11 +38,11 @@ function App() {
         </Container>
       </Navbar>
       {/* Vertical Navigation Bar */}
-      <div style={{ position: "fixed", height: "90%", width: "20%", top: "10%" }} className="btn-group-vertical">
-        <Link className="btn btn-secondary rounded-0 border border-primary " to="/home">Home</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/locations">All Locations</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/favlocations">Favourite Locations</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/logout">Logout</Link>
+      <div style={{ position: "fixed", height: "90%", width: "20%", top: "10%" }} className="bg-secondary">
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/home">Home</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/locations">All Locations</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/favlocations">Favourite Locations</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/logout">Logout</Link>
       </div>
       <Routes>
         <Route path="/home" element={<Home />} />
@@ -77,20 +77,19 @@ function Home() {
   }, [])
   // Load Location for Marker
   let loc = [];
-  for (let i = 0; i < locId.length; i++) {
-    var url = "http://localhost:8000/location/" + locId[i];
+  for (let i = 0; i < locID.length; i++) {
+    var url = "http://localhost:8080/location/" + locID[i];
     fetch(url)
       .then((response) => {
         response.json()
       })
       .then((data) => {
-        for (let i = 0; i < 15; i++) {
-          let obj = { latitude: data[locId[i] - 1].latitude, longtitude: data[locId[i] - 1].longtitude };
+        for (let i = 0; i < locID.length; i++) {
+          let obj = { latitude: data[locID[i] - 1].latitude, longtitude: data[locID[i] - 1].longtitude };
           loc.push(obj);
         }
       })
   }
-  console.log(loc);
   // Load Google Map
   return isLoaded ? (
     <div style={{ position: "absolute", right: "0", bottom: "0" }}>
@@ -112,16 +111,50 @@ function Home() {
 
 function Locations() {
   // Load Location for Table
-  let loc = [];
-  fetch("http://localhost:8000/locations")
-    .then((response) => response.json())
+  let loc = [
+    {
+      ID: 1,
+      name: "CONNAUGHT ROAD CENTRAL",
+      min: 41,
+      max: 47.8
+    },
+    {
+      ID: 2,
+      name: "SALISBURY ROAD",
+      min: 49,
+      max: 50
+    },
+    {
+      ID: 3,
+      name: "CHATHAM ROAD NORTH",
+      min: 45.2,
+      max: 52
+    }];
+  fetch("http://localhost:8080/locations")
+    .then((response) => {
+      response.json();
+    })
     .then((data) => {
-      for (let i = 0; i < 15; i++) {
-        let obj = { id: i, name: data[locId[i] - 1].name, min: data[locId[i] - 1].minTrafficSpeed, max: data[locId[i] - 1].maxTrafficSpeed };
+      for (let i = 0; i < locID.length; i++) {
+        const temp = locID[i] - 1;
+        const obj = { id: i, name: data[temp].name, min: data[temp].minTrafficSpeed, max: data[temp].maxTrafficSpeed };
+        console.log(obj);
         loc.push(obj);
       }
     })
-  //
+  const DisplayData = loc.map(
+    (loc) => {
+      return (
+        <tr>
+          <th>{loc.ID}</th>
+          <td>{loc.name}</td>
+          <td>{loc.min}</td>
+          <td>{loc.max}</td>
+        </tr>
+      )
+    }
+  )
+  // Search Function
   function Filter() {
     var input, filter, table, tr, td, i, txtValue;
     input = document.querySelector("#searchBar");
@@ -140,47 +173,26 @@ function Locations() {
       }
     }
   }
+  // Sort Function
+  let sortDirection = false;
+  function sortColumn(columnName) {
+    sortDirection = !sortDirection;
+    loc = loc.sort((p1, p2) => sortDirection ? p1[columnName] - p2[columnName] : p2[columnName] - p1[columnName]);
+  }
   return (
     <div>
       <input id="searchBar" style={{ position: "absolute", right: "2%", top: "12%" }} type="text" onKeyUp={Filter} placeholder="Search for Road Names"></input>
-      <table id="locations" style={{ position: "fixed", top: "20%", left: "20%", width: "80%" }} className="table">
+      <table id="locations" style={{ position: "fixed", top: "20%", left: "20%", width: "80%" }} className="table sortable">
         <thead>
           <tr>
             <th scope="col">Location ID</th>
             <th scope="col">Road name</th>
-            <th scope="col">Minimum Speed (km/h)</th>
-            <th scope="col">Maximum Speed (km/h)</th>
+            <th scope="col" onClick={sortColumn("min")}>Minimum Speed (km/h)</th>
+            <th scope="col" onClick={sortColumn("max")}>Maximum Speed (km/h)</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>CONNAUGHT ROAD CENTRAL</td>
-            <td>41</td>
-            <td>47.8</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>SALISBURY ROAD</td>
-            <td>49</td>
-            <td>50</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>CHATHAM ROAD NORTH</td>
-            <td>45.2</td>
-            <td>52</td>
-          </tr>
-          {loc.map((loc) => {
-            return (
-              <tr>
-                <th scope="row">{loc.id}</th>
-                <td>{loc.name}</td>
-                <td>{loc.min}</td>
-                <td>{loc.max}</td>
-              </tr>
-            );
-          })}
+          {DisplayData}
         </tbody>
       </table>
     </div>
@@ -189,19 +201,48 @@ function Locations() {
 
 function FavLocations() {
   // Load Location for Table
-  let loc = [];
-  fetch("http://localhost:8000/locations")
+  let loc = [
+    {
+      ID: 3,
+      name: "CHATHAM ROAD NORTH",
+      min: 45.2,
+      max: 52
+    },
+    {
+      ID: 4,
+      name: "LUNG CHEUNG ROAD",
+      min: 41,
+      max: 47.8
+    },
+    {
+      ID: 5,
+      name: "JOCKEY CLUB ROAD",
+      min: 43.1,
+      max: 68
+    }];
+  fetch("http://localhost:8080/locations")
     .then((response) => response.json())
     .then((data) => {
-      for (let i = 0; i < 15; i++) {
-        let obj = { id: i, name: data[locId[i] - 1].name, min: data[locId[i] - 1].minTrafficSpeed, max: data[locId[i] - 1].maxTrafficSpeed };
+      for (let i = 0; i < locID.length; i++) {
+        let obj = { id: i, name: data[locID[i] - 1].name, min: data[locID[i] - 1].minTrafficSpeed, max: data[locID[i] - 1].maxTrafficSpeed};
         loc.push(obj);
-        console.log(obj)
       }
     })
+  const DisplayData = loc.map(
+    (loc) => {
+      return (
+        <tr>
+          <th>{loc.ID}</th>
+          <td>{loc.name}</td>
+          <td>{loc.min}</td>
+          <td>{loc.max}</td>
+        </tr>
+      )
+    }
+  )
   return (
     <div>
-      <table id="locations" style={{ position: "fixed", top: "20%", left: "20%", width: "80%" }} className="table">
+      <table id="locations" style={{ position: "fixed", top: "20%", left: "20%", width: "80%" }} className="table sortable">
         <thead>
           <tr>
             <th scope="col">Location ID</th>
@@ -211,35 +252,7 @@ function FavLocations() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">3</th>
-            <td>CHATHAM ROAD NORTH</td>
-            <td>45.2</td>
-            <td>52</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>LUNG CHEUNG ROAD</td>
-            <td>41</td>
-            <td>47.8</td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td>JOCKEY CLUB ROAD</td>
-            <td>43.1</td>
-            <td>68</td>
-          </tr>
-
-          {loc.map((loc) => {
-            return (
-              <tr>
-                <th scope="row">{loc.id}</th>
-                <td>{loc.name}</td>
-                <td>{loc.min}</td>
-                <td>{loc.max}</td>
-              </tr>
-            );
-          })}
+          {DisplayData}
         </tbody>
       </table>
     </div>
