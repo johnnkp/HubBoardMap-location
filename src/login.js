@@ -10,21 +10,16 @@ import React from 'react'
 import {Form, Button} from "react-bootstrap";
 import {useState} from 'react';
 import axios from "axios";
-import loginBackground from "./login/images/bg-01.jpg";
-import HubBoardIcon from "./HubBoardMap.svg";
-import loginMainCSS from "./login/css/main.css"
-import loginUtilCSS from "./login/css/util.css"
-import "./bootstrap.scheme.css"
 
-export default function Login() {
+function Login() {
     // https://colorlib.com/wp/template/login-form-v5/
     // https://www.freecodecamp.org/news/react-background-image-tutorial-how-to-set-backgroundimage-with-inline-css-style
-    return <div className="container-login100" style={{backgroundImage: `url(${loginBackground})`}}>
+    return <div className="container-login100">
         <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
             <form className="login100-form validate-form flex-sb flex-w"
-                  action="http://localhost:80/login" method="post">
+                  action="http://localhost:80/" method="post">
                 <div className="d-flex align-items-center w-100 pb-5">
-                    <img src={HubBoardIcon} width="75" height="75"/>
+                    <img width="75" height="75"/>
                     <span className="login100-form-title">
 						HubBoard Map Login
 					</span>
@@ -52,3 +47,5 @@ export default function Login() {
         </div>
     </div>;
 }
+
+export default Login;
