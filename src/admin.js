@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom/client';
 import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter, Routes, Route, Link,
@@ -10,13 +9,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import axios, * as others from 'axios';
-import { response } from 'express';
+// import { response } from 'express';
 
 //import Login from "./Login";
 // Experimental: import empty service worker for PWA
 //import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-let locId = [49, 115, 39, 91, 78, 110, 118, 141, 69, 164, 16, 19, 48, 54, 67];
 
 export default function Admin() {
   return (
@@ -338,11 +336,12 @@ class UpdateLocation extends React.Component {
   loadHandler = (e) => {
     axios.get('http://localhost:80/admin/location/'+this.state.locID, {parmas:{locID : this.state.locID}})
     .then(response =>{
-      this.setState({ name : response.name })
-      this.setState({ latitude : response.latitude})
-      this.setState({ longtitude : response.longtitude})
-      this.setState({maxTrafficSpeed : response.maxTrafficSpeed})
-      this.setState({ minTrafficSpeed : response.minTrafficSpeed})
+      console.log(response.data.name)
+      this.setState({ name : response.data.name })
+      this.setState({ latitude : response.data.latitude})
+      this.setState({ longtitude : response.data.longtitude})
+      this.setState({maxTrafficSpeed : response.data.maxTrafficSpeed})
+      this.setState({ minTrafficSpeed : response.data.minTrafficSpeed})
 
 })
     .catch(error =>{
@@ -352,7 +351,7 @@ class UpdateLocation extends React.Component {
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-    axios.post('http://localhost:80/admin/add/location', this.state)
+    axios.put('http://localhost:80/admin/add/location', this.state)
       .then(response => {
         console.log(response)
       })
@@ -372,7 +371,7 @@ class UpdateLocation extends React.Component {
             </label>
           </div>
 
-          <button type="button " onClick={this.loadHandler}>Load</button>
+          <button type="button" onClick={this.loadHandler}>Load</button>
           <div>
             <label>
               Name: 
@@ -430,8 +429,8 @@ class UpdateUser extends React.Component {
   loadHandler = (e) => {
     axios.get('http://localhost:80/admin/user/'+this.state.userID, {parmas:{locID : this.state.userID}})
     .then(response =>{
-      this.setState({ username : response.username })
-      this.setState({ password : response.password})
+      this.setState({ username : response.data.username })
+      this.setState({ password : response.data.password})
    })
    .catch(error => {
     console.log(error)
@@ -574,3 +573,4 @@ class DeleteUser extends React.Component {
     )
   }
 }
+
