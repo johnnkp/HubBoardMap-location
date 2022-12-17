@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "./login";
-import User from "./user";
+import Login from "./login.js";
+import User from "./user.js";
+import Admin from "./admin.js";
 
 function App() {
   return (
