@@ -33,29 +33,27 @@ function App() {
       </Navbar>
       {/* Vertical Navigation Bar */}
       <div style={{ position: "fixed", height: "90%", width: "20%", top: "10%" }} className="btn-group-vertical">
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/home">Home</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_create">Create Location</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_read">Read Location</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_update">Update Location</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_delete">Delete Location</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_update">Update User</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_create">Create User</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_read">Read User</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_update">Update User</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_delete">Delete User</Link>
-        <Link className="btn btn-secondary rounded-0 border border-primary" to="/logout">Logout</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/home">Home</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_create">Create Location</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_read">Read Location</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_update">Update Location</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_delete">Delete Location</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_create">Create User</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_read">Read User</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_update">Update User</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_delete">Delete User</Link>
+        <Link style={{ height: "10%", width: "100%" }} className="btn btn-secondary rounded-0 border border-primary" to="/logout">Logout</Link>
       </div>
       <Routes>
         <Route path="/admin/home" element={<Home />} />
         <Route path="/admin/location_create" element={<CreateLocation />} />
         <Route path="/admin/location_read" element={<ReadLocation />} />
-        <Route path="/admin/location_delete" element={<DeleteLocation />} />
         <Route path="/admin/location_update" element={<UpdateLocation />} />
+        <Route path="/admin/location_delete" element={<DeleteLocation />} />
         <Route path="/admin/user_create" element={<CreateUser/>} />
         <Route path="/admin/user_read" element={<ReadUser />} />
         <Route path="/admin/user_update" element={<UpdateUser />} />
         <Route path="/admin/user_delete" element={<DeleteUser />} />
-        
       </Routes>
     </BrowserRouter>
   );
