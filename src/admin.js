@@ -1,11 +1,3 @@
-/* PROGRAMMER:
- * Mok Chau Wing (1155142763)
- * Chan Shi Leung Jonathan (1155142863)
- * Li Tsz Yeung (1155144367)
- * Ng Kai Pong (1155144829)
- * Lee Yat Him (1155176301)
- * Lin Chun Man (1155177065)
-*/
 import ReactDOM from 'react-dom/client';
 import React, { useEffect, useState } from 'react';
 import {
@@ -17,7 +9,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
-import { Axios } from 'axios';
+import axios, * as others from 'axios';
 
 //import Login from "./Login";
 // Experimental: import empty service worker for PWA
@@ -46,6 +38,7 @@ function App() {
         <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_read">Read Location</Link>
         <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_update">Update Location</Link>
         <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_delete">Delete Location</Link>
+        <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/location_update">Update User</Link>
         <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_create">Create User</Link>
         <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_read">Read User</Link>
         <Link className="btn btn-secondary rounded-0 border border-primary" to="/admin/user_update">Update User</Link>
@@ -56,8 +49,13 @@ function App() {
         <Route path="/admin/home" element={<Home />} />
         <Route path="/admin/location_create" element={<CreateLocation />} />
         <Route path="/admin/location_read" element={<ReadLocation />} />
+        <Route path="/admin/location_delete" element={<DeleteLocation />} />
+        <Route path="/admin/location_update" element={<UpdateLocation />} />
         <Route path="/admin/user_create" element={<CreateUser/>} />
         <Route path="/admin/user_read" element={<ReadUser />} />
+        <Route path="/admin/user_update" element={<UpdateUser />} />
+        <Route path="/admin/user_delete" element={<DeleteUser />} />
+        
       </Routes>
     </BrowserRouter>
   );
@@ -137,7 +135,7 @@ export class CreateLocation extends React.Component {
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-    Axios.post('http://localhost:3000/admin/add/location', this.state)
+    axios.post('http://localhost:8080/admin/add/location', this.state)
       .then(response => {
         console.log(response)
       })
@@ -205,7 +203,7 @@ class CreateUser extends React.Component {
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-    Axios.post('http://localhost:3000/admin/add/location', this.state)
+    axios.post('http://localhost:8080/admin/add/location', this.state)
       .then(response => {
         console.log(response)
       })
@@ -247,7 +245,7 @@ class CreateUser extends React.Component {
 class ReadLocation extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { locId: '' }
+    this.state = { locID: ""}
   }
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -255,17 +253,18 @@ class ReadLocation extends React.Component {
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-  }
 
+    axios.get('http://localhost:8080/admin/location/'+this.state.locID, {parmas:{locID : this.state.locID}})
+  }
   render() {
-    const { locId } = this.state
+    const { locID } = this.state
     return (
       <>
         <div style={{position: "absolute", left: "22%", top: "12%" }}>
-          <form onSubmit={this.submitHandler} action="http://localhost:3000//admin/location/:locID" method="GET">
+          <form onSubmit={this.submitHandler} >
             <label>
               Location ID:
-              <input type="text" name="locId" value={locId} onChange={this.changeHandler} />
+              <input type="text" name="locID" value={locID} onChange={this.changeHandler} />
             </label>
             <button type="submit">Submit</button>
           </form>
@@ -284,25 +283,27 @@ class ReadLocation extends React.Component {
 class ReadUser extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { userId: '' }
+    this.state = { userID: '' }
   }
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
+
   }
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
+    axios.get('http://localhost:8080/admin/user/'+this.state.userID, {parmas:{userID : this.state.userID}})
   }
 
   render() {
-    const { userId } = this.state
+    const { userID } = this.state
     return (
       <>
         <div style={{position: "absolute", left: "22%", top: "12%" }}>
           <form onSubmit={this.submitHandler} action="/admin/location/:locID" method="Get">
             <label>
               User ID:
-              <input type="text" name="userId" value={userId} onChange={this.changeHandler} />
+              <input type="text" name="userID" value={userID} onChange={this.changeHandler} />
             </label>
             <button type="submit">Submit</button>
           </form>
@@ -316,12 +317,204 @@ class ReadUser extends React.Component {
     )
   }
 }
+
+
+class UpdateLocation extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { locID: ""}
+    
+  }
+  changeHandler = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+  submitHandler = (e) => {
+    e.preventDefault()
+    console.log(this.state)
+
+    axios.put('http://localhost:8080/admin/update/location/:locID'+this.state.locID, {parmas:{locID : this.state.locID}})
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
+  }
+  render() {
+    const { locID } = this.state
+    return (
+      <>
+        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+          <form onSubmit={this.submitHandler} >
+            <label>
+              Location name you want to update:
+              <input type="text" name="locID" value={locID} onChange={this.changeHandler} />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+   
+      </>
+
+
+
+    )
+  }
+}
+
+
+class UpdateUser extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      username: '',
+      password: '',
+
+    }
+    
+  }
+  changeHandler = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+  submitHandler = (e) => {
+    e.preventDefault()
+    console.log(this.state)
+
+    axios.put('http://localhost:8080/admin///update/user/:userID', {parmas:{locID : this.state.username}})
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
+  }
+  render() {
+    const { password, username } = this.state
+    return (
+      <>
+        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+          <form onSubmit={this.submitHandler} >
+            <label>
+              User name you want to update:
+              <input type="text" name="locID" value={username} onChange={this.changeHandler} />
+            </label>
+            <label>
+             Password you want to update:
+              <input type="text" name="password" value={password} onChange={this.changeHandler} />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+   
+      </>
+
+
+
+    )
+  }
+}
+
+
+
+
+class DeleteLocation extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { locID: ""}
+    
+  }
+  changeHandler = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+  submitHandler = (e) => {
+    e.preventDefault()
+    console.log(this.state)
+
+    axios.delete('http://localhost:8080/admin/delete/location/'+this.state.locID, {parmas:{locID : this.state.locID}})
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
+  }
+  render() {
+    const { locID } = this.state
+    return (
+      <>
+        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+          <form onSubmit={this.submitHandler} >
+            <label>
+              Location ID you want to delete:
+              <input type="text" name="locID" value={locID} onChange={this.changeHandler} />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+   
+      </>
+
+
+
+    )
+  }
+}
+
+class DeleteUser extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { userID: ""}
+  }
+  changeHandler = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+  submitHandler = (e) => {
+    e.preventDefault()
+    console.log(this.state)
+
+    axios.delete('http://localhost:8080/admin/delete/location/'+this.state.userID, {parmas:{locID : this.state.userID}})
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
+  render() {
+    const { userID } = this.state
+    return (
+      <>
+        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+          <form onSubmit={this.submitHandler} >
+            <label>
+              User ID you want to delete:
+              <input type="text" name="userID" value={userID} onChange={this.changeHandler} />
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+
+      </>
+    )
+  }
+}
+
+
+
+
+
+
+
 const root = ReactDOM.createRoot(document.querySelector('#app'));
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
-// Experimental: register service worker
-// serviceWorkerRegistration.register();
