@@ -31,22 +31,35 @@ export default function Admin() {
         </Container>
       </Navbar>
 
-      <div style={{ position: "fixed", height: "90%", width: "20%", top: "10%" }} className="bg-secondary">
-                <button style={{ height: "10%", width: "100%" }}  className="btn btn-secondary rounded-0 border border-primary">Home</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={CreateLocation} className="btn btn-secondary rounded-0 border border-primary">Create Location</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={ReadLocation} className="btn btn-secondary rounded-0 border border-primary">Read Location</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={UpdateLocation} className="btn btn-secondary rounded-0 border border-primary">Update Location</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={DeleteLocation} className="btn btn-secondary rounded-0 border border-primary">Delete Location</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={CreateUser} className="btn btn-secondary rounded-0 border border-primary">Create User</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={ReadUser} className="btn btn-secondary rounded-0 border border-primary">Read User</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={UpdateUser} className="btn btn-secondary rounded-0 border border-primary">Update User</button>
-                <button style={{ height: "10%", width: "100%" }} onClick={DeleteUser} className="btn btn-secondary rounded-0 border border-primary">Delete User</button>
+      <div style={{ position: "fixed", height: "90%", width: "10%", top: "10%" }} className="bg-secondary">
+           
+                <button style={{ height: "22.5%", width: "100%" }} onClick={CreateLocation} className="btn btn-secondary rounded-0 border border-primary">Create Location</button>
+                <button style={{ height: "22.5%", width: "100%" }} onClick={ReadLocation} className="btn btn-secondary rounded-0 border border-primary">Read Location</button>
+                <button style={{ height: "22.5%", width: "100%" }} onClick={UpdateLocation} className="btn btn-secondary rounded-0 border border-primary">Update Location</button>
+                <button style={{ height: "22.5%", width: "100%" }} onClick={DeleteLocation} className="btn btn-secondary rounded-0 border border-primary">Delete Location</button>
+   
             </div>
+<div style={{ position: "fixed", left:"60vw", top: "90vh", width: "10%", top: "10%" }}>
+             <button style={{ height: "20vh", width: "100%" }} onClick={CreateUser} className="btn btn-secondary rounded-0 border border-primary">Create User</button>
+                <button style={{ height: "20vh", width: "100%" }} onClick={ReadUser} className="btn btn-secondary rounded-0 border border-primary">Read User</button>
+                <button style={{ height: "20vh", width: "100%" }} onClick={UpdateUser} className="btn btn-secondary rounded-0 border border-primary">Update User</button>
+                <button style={{ height: "20vh", width: "100%" }} onClick={DeleteUser} className="btn btn-secondary rounded-0 border border-primary">Delete User</button>
+</div>
+            <CreateLocation/>
+            <ReadLocation/>
            <UpdateLocation/>
+           <DeleteLocation/>
+           <CreateUser/>
+           <ReadUser/>
+           <UpdateUser/>
+           <DeleteUser/>
+
            
             </div>
   );
 }
+
+
 
 // function Home() {
 //   const containerStyle = {
@@ -133,7 +146,7 @@ class CreateLocation extends React.Component {
   render() {
     const { name, latitude, longtitude, maxTrafficSpeed, minTrafficSpeed } = this.state
     return (
-      <div style={{position: "absolute", left: "22%", top: "12%" }}>
+      <div style={{ position: "fixed",  top: "10vh" , left:"12.5vw"}}>
         <form onSubmit={this.submitHandler}>
           <div>
             <label>
@@ -201,7 +214,7 @@ class CreateUser extends React.Component {
   render() {
     const { username, password } = this.state
     return (
-      <div style={{position: "absolute", left: "22%", top: "12%" }}>
+      <div style={{  position: "fixed",  top: "10vh" , left:"72.5vw"}} >
         <form onSubmit={this.submitHandler}>
           <div>
             <label>
@@ -253,7 +266,7 @@ class ReadLocation extends React.Component {
     const { locID } = this.state
     return (
       <>
-        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+        <div style={{ position: "fixed",  top: "38vh" , left:"12.5vw"}}  >
           <form onSubmit={this.submitHandler} >
             <label>
               Location ID:
@@ -298,12 +311,13 @@ class ReadUser extends React.Component {
     const { userID } = this.state
     return (
       <>
-        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+        <div style={{ position: "fixed",  top: "38vh" , left:"72.5vw"}} >
           <form onSubmit={this.submitHandler} action="/admin/location/:locID" method="Get">
             <label>
               User ID:
               <input type="text" name="userID" value={userID} onChange={this.changeHandler} />
             </label>
+            <div></div>
             <button type="submit">Submit</button>
           </form>
         </div>
@@ -363,16 +377,19 @@ class UpdateLocation extends React.Component {
   render() {
     const { locID, name, latitude, longtitude, maxTrafficSpeed, minTrafficSpeed } = this.state
     return (
-      <div style={{position: "absolute", left: "22%", top: "12%" }}>
+      <div style={{ position: "fixed",  top: "50vh" , left:"12.5vw"}}>
         <form onSubmit={this.submitHandler}>
           
-        <div>
-            <label>LocationId for fetching data
+        <div >
+            <label>
+              LocationId for fetching data
+<div></div>
               <input type="text" name="locID" value={locID} onChange={this.changeHandler}/>
             </label>
+            <button type="button" onClick={this.loadHandler}>Load</button>
           </div>
 
-          <button type="button" onClick={this.loadHandler}>Load</button>
+         
           <div>
             <label>
               Name: 
@@ -457,7 +474,7 @@ class UpdateUser extends React.Component {
     const { userID, password, username } = this.state
     return (
       
-        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+        <div style={{ position: "fixed",  top: "50vh" , left:"72.5vw"}}>
 
           <form onSubmit={this.submitHandler} >
           
@@ -516,10 +533,11 @@ class  DeleteLocation extends React.Component {
     const { locID } = this.state
     return (
       <>
-        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+        <div style={{ position: "fixed",  top: "75vh" , left:"12.5vw"}}>
           <form onSubmit={this.submitHandler} >
             <label>
               Location ID you want to delete:
+              <div></div>
               <input type="text" name="locID" value={locID} onChange={this.changeHandler} />
             </label>
             <button type="submit">Submit</button>
@@ -559,7 +577,7 @@ class DeleteUser extends React.Component {
     const { userID } = this.state
     return (
       <>
-        <div style={{position: "absolute", left: "22%", top: "12%" }}>
+        <div  style={{ position: "fixed",  top: "75vh" , left:"72.5vw"}}>
           <form onSubmit={this.submitHandler} >
             <label>
               User ID you want to delete:
