@@ -372,7 +372,7 @@ class UpdateLocation extends React.Component {
             </label>
           </div>
 
-          <button type="button " onClick={this.loadHandler}>Submit</button>
+          <button type="button " onClick={this.loadHandler}>Load</button>
           <div>
             <label>
               Name: 
@@ -416,6 +416,7 @@ class UpdateUser extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      userID: '',
       username: '',
       password: '',
 
@@ -425,11 +426,25 @@ class UpdateUser extends React.Component {
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
   }
+
+  loadHandler = (e) => {
+    axios.get('http://localhost:80/admin/user/'+this.state.userID, {parmas:{locID : this.state.userID}})
+    .then(response =>{
+      this.setState({ username : response.username })
+      this.setState({ password : response.password})
+   })
+   .catch(error => {
+    console.log(error)
+  })
+  
+  
+  }
+
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
 
-    axios.put('http://localhost:80/admin///update/user/:userID', {parmas:{locID : this.state.username}})
+    axios.put('http://localhost:80/admin/update/user/' + this.state.userId, {parmas:{locID : this.state.userID}})
     .then(response => {
       console.log(response)
     })
@@ -439,11 +454,19 @@ class UpdateUser extends React.Component {
 
   }
   render() {
-    const { password, username } = this.state
+    const { userID, password, username } = this.state
     return (
-      <>
+      
         <div style={{position: "absolute", left: "22%", top: "12%" }}>
+
           <form onSubmit={this.submitHandler} >
+          
+            <label>userId for fetching data
+              <input type="text" name="userID" value={userID} onChange={this.changeHandler}/>
+            </label>
+          
+
+          <button type="button " onClick={this.loadHandler}>Load</button>
             <label>
               User name you want to :
               <input type="text" name="locID" value={username} onChange={this.changeHandler} />
@@ -456,8 +479,7 @@ class UpdateUser extends React.Component {
           </form>
         </div>
 
-   
-      </>
+  
 
 
 
@@ -468,7 +490,7 @@ class UpdateUser extends React.Component {
 
 
 
-class DeleteLocation extends React.Component {
+class  DeleteLocation extends React.Component {
   constructor(props) {
     super(props)
     this.state = { locID: ""}
