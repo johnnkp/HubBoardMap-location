@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom/client';
 import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter, Routes, Route, Link,
@@ -9,14 +10,14 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import axios, * as others from 'axios';
-// import { response } from 'express';
 
 //import Login from "./Login";
 // Experimental: import empty service worker for PWA
 //import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
+let locId = [49, 115, 39, 91, 78, 110, 118, 141, 69, 164, 16, 19, 48, 54, 67];
 
-export default function Admin() {
+function Admin() {
   return (
     <div>
       {/* Horizontal Navigation Bar */}
@@ -32,34 +33,33 @@ export default function Admin() {
       </Navbar>
 
       <div style={{ position: "fixed", height: "90%", width: "10%", top: "10%" }} className="bg-secondary">
-           
-                <button style={{ height: "22.5%", width: "100%" }} onClick={CreateLocation} className="btn btn-secondary rounded-0 border border-primary">Create Location</button>
-                <button style={{ height: "22.5%", width: "100%" }} onClick={ReadLocation} className="btn btn-secondary rounded-0 border border-primary">Read Location</button>
-                <button style={{ height: "22.5%", width: "100%" }} onClick={UpdateLocation} className="btn btn-secondary rounded-0 border border-primary">Update Location</button>
-                <button style={{ height: "22.5%", width: "100%" }} onClick={DeleteLocation} className="btn btn-secondary rounded-0 border border-primary">Delete Location</button>
-   
-            </div>
-<div style={{ position: "fixed", left:"60vw", top: "90vh", width: "10%", top: "10%" }}>
-             <button style={{ height: "20vh", width: "100%" }} onClick={CreateUser} className="btn btn-secondary rounded-0 border border-primary">Create User</button>
-                <button style={{ height: "20vh", width: "100%" }} onClick={ReadUser} className="btn btn-secondary rounded-0 border border-primary">Read User</button>
-                <button style={{ height: "20vh", width: "100%" }} onClick={UpdateUser} className="btn btn-secondary rounded-0 border border-primary">Update User</button>
-                <button style={{ height: "20vh", width: "100%" }} onClick={DeleteUser} className="btn btn-secondary rounded-0 border border-primary">Delete User</button>
-</div>
-            <CreateLocation/>
-            <ReadLocation/>
-           <UpdateLocation/>
-           <DeleteLocation/>
-           <CreateUser/>
-           <ReadUser/>
-           <UpdateUser/>
-           <DeleteUser/>
 
-           
-            </div>
+        <button style={{ height: "22.5%", width: "100%" }} onClick={CreateLocation} className="btn btn-secondary rounded-0 border border-primary">Create Location</button>
+        <button style={{ height: "22.5%", width: "100%" }} onClick={ReadLocation} className="btn btn-secondary rounded-0 border border-primary">Read Location</button>
+        <button style={{ height: "22.5%", width: "100%" }} onClick={UpdateLocation} className="btn btn-secondary rounded-0 border border-primary">Update Location</button>
+        <button style={{ height: "22.5%", width: "100%" }} onClick={DeleteLocation} className="btn btn-secondary rounded-0 border border-primary">Delete Location</button>
+
+      </div>
+      <div style={{ position: "fixed", left: "60vw", top: "90vh", width: "10%", top: "10%" }}>
+        <button style={{ height: "20vh", width: "100%" }} onClick={CreateUser} className="btn btn-secondary rounded-0 border border-primary">Create User</button>
+        <button style={{ height: "20vh", width: "100%" }} onClick={ReadUser} className="btn btn-secondary rounded-0 border border-primary">Read User</button>
+        <button style={{ height: "20vh", width: "100%" }} onClick={UpdateUser} className="btn btn-secondary rounded-0 border border-primary">Update User</button>
+        <button style={{ height: "20vh", width: "100%" }} onClick={DeleteUser} className="btn btn-secondary rounded-0 border border-primary">Delete User</button>
+        <button style={{ height: "20vh", width: "100%" }} onClick={Logout} className="btn btn-secondary rounded-0 border border-primary">Logout</button>
+      </div>
+      <CreateLocation />
+      <ReadLocation />
+      <UpdateLocation />
+      <DeleteLocation />
+      <CreateUser />
+      <ReadUser />
+      <UpdateUser />
+      <DeleteUser />
+
+
+    </div>
   );
 }
-
-
 
 // function Home() {
 //   const containerStyle = {
@@ -117,7 +117,6 @@ export default function Admin() {
 //   ) : <></>
 // }
 
-// create location post form
 class CreateLocation extends React.Component {
   constructor(props) {
     super(props)
@@ -146,17 +145,17 @@ class CreateLocation extends React.Component {
   render() {
     const { name, latitude, longtitude, maxTrafficSpeed, minTrafficSpeed } = this.state
     return (
-      <div style={{ position: "fixed",  top: "10vh" , left:"12.5vw"}}>
+      <div style={{ position: "fixed", top: "10vh", left: "12.5vw" }}>
         <form onSubmit={this.submitHandler}>
           <div>
             <label>
-              Name: 
+              Name:
               <input type="text" name="name" value={name} onChange={this.changeHandler} />
             </label>
           </div>
           <div>
             <label>
-              Latitude: 
+              Latitude:
               <input type="text" name="latitude" value={latitude} onChange={this.changeHandler} />
             </label>
           </div>
@@ -214,7 +213,7 @@ class CreateUser extends React.Component {
   render() {
     const { username, password } = this.state
     return (
-      <div style={{  position: "fixed",  top: "10vh" , left:"72.5vw"}} >
+      <div style={{ position: "fixed", top: "10vh", left: "72.5vw" }} >
         <form onSubmit={this.submitHandler}>
           <div>
             <label>
@@ -245,7 +244,7 @@ class CreateUser extends React.Component {
 class ReadLocation extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { locID: ""}
+    this.state = { locID: "" }
   }
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -254,19 +253,19 @@ class ReadLocation extends React.Component {
     e.preventDefault()
     console.log(this.state)
 
-    axios.get('http://localhost:80/admin/location/'+this.state.locID, {parmas:{locID : this.state.locID}},)
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    axios.get('http://localhost:80/admin/location/' + this.state.locID, { parmas: { locID: this.state.locID } },)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
   render() {
     const { locID } = this.state
     return (
       <>
-        <div style={{ position: "fixed",  top: "38vh" , left:"12.5vw"}}  >
+        <div style={{ position: "fixed", top: "38vh", left: "12.5vw" }}  >
           <form onSubmit={this.submitHandler} >
             <label>
               Location ID:
@@ -298,20 +297,20 @@ class ReadUser extends React.Component {
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-    axios.get('http://localhost:8080/admin/user/'+this.state.userID, {parmas:{userID : this.state.userID}})
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    axios.get('http://localhost:8080/admin/user/' + this.state.userID, { parmas: { userID: this.state.userID } })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   render() {
     const { userID } = this.state
     return (
       <>
-        <div style={{ position: "fixed",  top: "38vh" , left:"72.5vw"}} >
+        <div style={{ position: "fixed", top: "38vh", left: "72.5vw" }} >
           <form onSubmit={this.submitHandler} action="/admin/location/:locID" method="Get">
             <label>
               User ID:
@@ -335,7 +334,7 @@ class ReadUser extends React.Component {
 class UpdateLocation extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { 
+    this.state = {
       locID: '',
       name: '',
       latitude: '',
@@ -348,25 +347,27 @@ class UpdateLocation extends React.Component {
     this.setState({ [e.target.name]: e.target.value })
   }
   loadHandler = (e) => {
-    axios.get('http://localhost:80/admin/location/'+this.state.locID, {parmas:{locID : this.state.locID}})
-    .then(response =>{
-      console.log(response.data.name)
-      this.setState({ name : response.data.name })
-      this.setState({ latitude : response.data.latitude})
-      this.setState({ longtitude : response.data.longtitude})
-      this.setState({maxTrafficSpeed : response.data.maxTrafficSpeed})
-      this.setState({ minTrafficSpeed : response.data.minTrafficSpeed})
+    axios.get('http://localhost:80/admin/location/' + this.state.locID, { parmas: { locID: this.state.locID } })
+      .then(response => {
+        console.log(response.data.name)
+        this.setState({ name: response.data.name })
+        this.setState({ latitude: response.data.latitude })
+        this.setState({ longtitude: response.data.longtitude })
+        this.setState({ maxTrafficSpeed: response.data.maxTrafficSpeed })
+        this.setState({ minTrafficSpeed: response.data.minTrafficSpeed })
 
-})
-    .catch(error =>{
-      console.log(error)
-    })
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
-    axios.put('http://localhost:80//admin/update/location/' +this.state.locID, { name :this.state.name, latitude:this.state.latitude,
-     longtitude:this.state.longtitude, maxTrafficSpeed: this.state.maxTrafficSpeed, minTrafficSpeed:this.state.minTrafficSpeed, parmas:{locID : this.state.locID}})
+    axios.put('http://localhost:80//admin/update/location/' + this.state.locID, {
+      name: this.state.name, latitude: this.state.latitude,
+      longtitude: this.state.longtitude, maxTrafficSpeed: this.state.maxTrafficSpeed, minTrafficSpeed: this.state.minTrafficSpeed, parmas: { locID: this.state.locID }
+    })
       .then(response => {
         console.log(response)
       })
@@ -377,28 +378,28 @@ class UpdateLocation extends React.Component {
   render() {
     const { locID, name, latitude, longtitude, maxTrafficSpeed, minTrafficSpeed } = this.state
     return (
-      <div style={{ position: "fixed",  top: "50vh" , left:"12.5vw"}}>
+      <div style={{ position: "fixed", top: "50vh", left: "12.5vw" }}>
         <form onSubmit={this.submitHandler}>
-          
-        <div >
+
+          <div >
             <label>
               LocationId for fetching data
-<div></div>
-              <input type="text" name="locID" value={locID} onChange={this.changeHandler}/>
+              <div></div>
+              <input type="text" name="locID" value={locID} onChange={this.changeHandler} />
             </label>
             <button type="button" onClick={this.loadHandler}>Load</button>
           </div>
 
-         
+
           <div>
             <label>
-              Name: 
+              Name:
               <input type="text" name="name" value={name} onChange={this.changeHandler} />
             </label>
           </div>
           <div>
             <label>
-              Latitude: 
+              Latitude:
               <input type="text" name="latitude" value={latitude} onChange={this.changeHandler} />
             </label>
           </div>
@@ -438,65 +439,65 @@ class UpdateUser extends React.Component {
       password: '',
 
     }
-    
+
   }
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
   loadHandler = (e) => {
-    axios.get('http://localhost:80/admin/user/'+this.state.userID, {parmas:{locID : this.state.userID}})
-    .then(response =>{
-      this.setState({ username : response.data.username })
-      this.setState({ password : response.data.password})
-   })
-   .catch(error => {
-    console.log(error)
-  })
-  
-  
+    axios.get('http://localhost:80/admin/user/' + this.state.userID, { parmas: { locID: this.state.userID } })
+      .then(response => {
+        this.setState({ username: response.data.username })
+        this.setState({ password: response.data.password })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+
   }
 
   submitHandler = (e) => {
     e.preventDefault()
     console.log(this.state)
 
-    axios.put('http://localhost:80/admin/update/user/' + this.state.userID, {parmas:{locID : this.state.userID}})
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    axios.put('http://localhost:80/admin/update/user/' + this.state.userID, { parmas: { locID: this.state.userID } })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
 
   }
   render() {
     const { userID, password, username } = this.state
     return (
-      
-        <div style={{ position: "fixed",  top: "50vh" , left:"72.5vw"}}>
 
-          <form onSubmit={this.submitHandler} >
-          
-            <label>userId for fetching data
-              <input type="text" name="userID" value={userID} onChange={this.changeHandler}/>
-            </label>
-          
+      <div style={{ position: "fixed", top: "50vh", left: "72.5vw" }}>
+
+        <form onSubmit={this.submitHandler} >
+
+          <label>userId for fetching data
+            <input type="text" name="userID" value={userID} onChange={this.changeHandler} />
+          </label>
+
 
           <button type="button " onClick={this.loadHandler}>Load</button>
-            <label>
-              User name you want to :
-              <input type="text" name="locID" value={username} onChange={this.changeHandler} />
-            </label>
-            <label>
-             Password you want to update:
-              <input type="text" name="password" value={password} onChange={this.changeHandler} />
-            </label>
-            <button type="submit">Submit</button>
-          </form>
-        </div>
+          <label>
+            User name you want to :
+            <input type="text" name="locID" value={username} onChange={this.changeHandler} />
+          </label>
+          <label>
+            Password you want to update:
+            <input type="text" name="password" value={password} onChange={this.changeHandler} />
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
 
-  
+
 
 
 
@@ -507,11 +508,11 @@ class UpdateUser extends React.Component {
 
 
 
-class  DeleteLocation extends React.Component {
+class DeleteLocation extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { locID: ""}
-    
+    this.state = { locID: "" }
+
   }
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -520,20 +521,20 @@ class  DeleteLocation extends React.Component {
     e.preventDefault()
     console.log(this.state)
 
-    axios.delete('http://localhost:80/admin/delete/location/'+this.state.locID, {parmas:{locID : this.state.locID}})
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    axios.delete('http://localhost:80/admin/delete/location/' + this.state.locID, { parmas: { locID: this.state.locID } })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
 
   }
   render() {
     const { locID } = this.state
     return (
       <>
-        <div style={{ position: "fixed",  top: "75vh" , left:"12.5vw"}}>
+        <div style={{ position: "fixed", top: "75vh", left: "12.5vw" }}>
           <form onSubmit={this.submitHandler} >
             <label>
               Location ID you want to delete:
@@ -544,7 +545,7 @@ class  DeleteLocation extends React.Component {
           </form>
         </div>
 
-   
+
       </>
 
 
@@ -556,7 +557,7 @@ class  DeleteLocation extends React.Component {
 class DeleteUser extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { userID: ""}
+    this.state = { userID: "" }
   }
   changeHandler = (e) => {
     this.setState({ [e.target.name]: e.target.value })
@@ -565,19 +566,19 @@ class DeleteUser extends React.Component {
     e.preventDefault()
     console.log(this.state)
 
-    axios.delete('http://localhost:80/admin/delete/location/'+this.state.userID, {parmas:{locID : this.state.userID}})
-    .then(response => {
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
+    axios.delete('http://localhost:80/admin/delete/location/' + this.state.userID, { parmas: { locID: this.state.userID } })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
   render() {
     const { userID } = this.state
     return (
       <>
-        <div  style={{ position: "fixed",  top: "75vh" , left:"72.5vw"}}>
+        <div style={{ position: "fixed", top: "75vh", left: "72.5vw" }}>
           <form onSubmit={this.submitHandler} >
             <label>
               User ID you want to delete:
@@ -592,3 +593,9 @@ class DeleteUser extends React.Component {
     )
   }
 }
+
+function Logout() {
+  window.location.replace('http://localhost/logout');
+}
+
+export default Admin;
